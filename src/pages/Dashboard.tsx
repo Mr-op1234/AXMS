@@ -15,19 +15,38 @@ import Navbar from '@/components/Navbar';
 import PrintJobCard from '@/components/PrintJobCard';
 import { toast } from 'sonner';
 
+// Define a type for the job status
+type JobStatus = 'completed' | 'pending' | 'cancelled';
+type JobColor = 'bw' | 'color';
+type JobSides = 'single' | 'double';
+
+// Define a type for the print job
+interface PrintJob {
+  id: string;
+  title: string;
+  files: number;
+  pages: number;
+  color: JobColor;
+  sides: JobSides;
+  status: JobStatus;
+  date: string;
+  time: string;
+  amount: number;
+}
+
 const Dashboard = () => {
   const navigate = useNavigate();
   
   // Mock data for recent print jobs
-  const [recentJobs, setRecentJobs] = useState([
+  const [recentJobs, setRecentJobs] = useState<PrintJob[]>([
     {
       id: '1',
       title: 'Assignment Report.pdf',
       files: 2,
       pages: 5,
-      color: 'bw' as const,
-      sides: 'double' as const,
-      status: 'completed' as const,
+      color: 'bw',
+      sides: 'double',
+      status: 'completed',
       date: '12 Jun 2023',
       time: '10:45 AM',
       amount: 15.00
@@ -37,9 +56,9 @@ const Dashboard = () => {
       title: 'Project Presentation.pdf',
       files: 1,
       pages: 12,
-      color: 'color' as const,
-      sides: 'single' as const,
-      status: 'pending' as const,
+      color: 'color',
+      sides: 'single',
+      status: 'pending',
       date: '15 Jun 2023',
       time: '2:30 PM',
       amount: 96.00
@@ -49,9 +68,9 @@ const Dashboard = () => {
       title: 'Research Paper.pdf',
       files: 3,
       pages: 8,
-      color: 'bw' as const,
-      sides: 'single' as const,
-      status: 'cancelled' as const,
+      color: 'bw',
+      sides: 'single',
+      status: 'cancelled',
       date: '10 Jun 2023',
       time: '9:15 AM',
       amount: 24.00
@@ -90,11 +109,11 @@ const Dashboard = () => {
       action: {
         label: 'Yes, Cancel',
         onClick: () => {
-          setRecentJobs(
-            recentJobs.map(job => 
-              job.id === id ? { ...job, status: 'cancelled' as const } : job
-            )
+          // Create a new array with the updated job
+          const updatedJobs = recentJobs.map(job => 
+            job.id === id ? { ...job, status: 'cancelled' as JobStatus } : job
           );
+          setRecentJobs(updatedJobs);
           toast.success('Print job cancelled successfully');
         }
       }
